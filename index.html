@@ -1,1 +1,2813 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Angles Interactive Simulator</title>
+
+
+    <style>
+
+        /* =====================================
+           GENERAL PAGE SETTINGS
+        ===================================== */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        body {
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f3f6fb;
+
+            color: #1f2937;
+
+            line-height: 1.6;
+        }
+
+
+        /* =====================================
+           HEADER
+        ===================================== */
+
+        header {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #4f46e5
+                );
+
+            color: white;
+
+            text-align: center;
+
+            padding: 35px 15px;
+        }
+
+
+        header h1 {
+
+            font-size:
+                clamp(1.8rem, 5vw, 3rem);
+
+            margin-bottom: 10px;
+        }
+
+
+        header p {
+
+            font-size:
+                clamp(1rem, 2.5vw, 1.2rem);
+        }
+
+
+        /* =====================================
+           NAVIGATION
+        ===================================== */
+
+        nav {
+
+            background: #111827;
+
+            display: flex;
+
+            justify-content: center;
+
+            flex-wrap: wrap;
+
+            gap: 8px;
+
+            padding: 10px;
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 100;
+        }
+
+
+        nav button {
+
+            background: #374151;
+
+            color: white;
+
+            border: none;
+
+            border-radius: 8px;
+
+            padding: 11px 16px;
+
+            cursor: pointer;
+
+            font-size: 0.95rem;
+        }
+
+
+        nav button:hover {
+
+            background: #2563eb;
+        }
+
+
+        /* =====================================
+           MAIN CONTENT
+        ===================================== */
+
+        main {
+
+            max-width: 1100px;
+
+            margin: auto;
+
+            padding: 20px;
+        }
+
+
+        /* =====================================
+           SECTIONS
+        ===================================== */
+
+        .section {
+
+            display: none;
+        }
+
+
+        .section.active {
+
+            display: block;
+        }
+
+
+        /* =====================================
+           CARDS
+        ===================================== */
+
+        .card {
+
+            background: white;
+
+            border-radius: 14px;
+
+            padding: 24px;
+
+            margin-bottom: 20px;
+
+            box-shadow:
+                0 4px 15px
+                rgba(0,0,0,0.08);
+        }
+
+
+        .card h2 {
+
+            color: #1d4ed8;
+
+            margin-bottom: 15px;
+        }
+
+
+        .card h3 {
+
+            color: #374151;
+
+            margin-top: 18px;
+
+            margin-bottom: 8px;
+        }
+
+
+        /* =====================================
+           DEFINITION BOX
+        ===================================== */
+
+        .definition {
+
+            background: #eff6ff;
+
+            border-left:
+                5px solid #2563eb;
+
+            padding: 16px;
+
+            border-radius: 8px;
+
+            margin: 15px 0;
+        }
+
+
+        /* =====================================
+           STUDY NOTES
+        ===================================== */
+
+        .note-list {
+
+            padding-left: 25px;
+        }
+
+
+        .formula {
+
+            background: #f3f4f6;
+
+            border-radius: 8px;
+
+            padding: 14px;
+
+            margin: 10px 0;
+
+            font-weight: bold;
+        }
+
+
+        /* =====================================
+           SIMULATOR
+        ===================================== */
+
+        .simulator {
+
+            text-align: center;
+        }
+
+
+        .angle-display {
+
+            width: 100%;
+
+            max-width: 600px;
+
+            margin: 20px auto;
+
+            background: #f9fafb;
+
+            border:
+                2px solid #dbeafe;
+
+            border-radius: 12px;
+
+            padding: 20px;
+        }
+
+
+        canvas {
+
+            width: 100%;
+
+            max-width: 500px;
+
+            height: auto;
+
+            display: block;
+
+            margin: auto;
+        }
+
+
+        .angle-value {
+
+            font-size: 2rem;
+
+            font-weight: bold;
+
+            color: #2563eb;
+
+            margin: 12px;
+        }
+
+
+        input[type="range"] {
+
+            width: 90%;
+
+            max-width: 500px;
+
+            cursor: pointer;
+        }
+
+
+        .angle-type {
+
+            font-size: 1.4rem;
+
+            font-weight: bold;
+
+            color: #4f46e5;
+
+            margin-top: 12px;
+        }
+
+
+        .simulator-info {
+
+            margin-top: 15px;
+
+            background: #f0fdf4;
+
+            padding: 12px;
+
+            border-radius: 8px;
+        }
+
+
+        /* =====================================
+           TYPES OF ANGLES TABLE
+        ===================================== */
+
+        .angle-table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            margin-top: 15px;
+        }
+
+
+        .angle-table th,
+        .angle-table td {
+
+            border:
+                1px solid #d1d5db;
+
+            padding: 11px;
+
+            text-align: left;
+        }
+
+
+        .angle-table th {
+
+            background: #2563eb;
+
+            color: white;
+        }
+
+
+        .angle-table tr:nth-child(even) {
+
+            background: #f3f4f6;
+        }
+
+
+        /* =====================================
+           QUIZ
+        ===================================== */
+
+        .question {
+
+            margin-bottom: 25px;
+
+            padding: 18px;
+
+            border:
+                1px solid #dbeafe;
+
+            border-radius: 10px;
+        }
+
+
+        .question h3 {
+
+            margin-top: 0;
+
+            color: #111827;
+        }
+
+
+        .option {
+
+            display: block;
+
+            background: #f9fafb;
+
+            margin: 8px 0;
+
+            padding: 11px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            border:
+                1px solid #e5e7eb;
+        }
+
+
+        .option:hover {
+
+            background: #eff6ff;
+        }
+
+
+        .option input {
+
+            margin-right: 8px;
+        }
+
+
+        /* =====================================
+           BUTTONS
+        ===================================== */
+
+        .button {
+
+            background: #2563eb;
+
+            color: white;
+
+            border: none;
+
+            padding: 13px 22px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-size: 1rem;
+
+            margin: 6px;
+        }
+
+
+        .button:hover {
+
+            background: #1d4ed8;
+        }
+
+
+        .reset-button {
+
+            background: #6b7280;
+        }
+
+
+        .reset-button:hover {
+
+            background: #4b5563;
+        }
+
+
+        /* =====================================
+           QUIZ RESULT
+        ===================================== */
+
+        #quizResult {
+
+            margin-top: 20px;
+
+            padding: 18px;
+
+            border-radius: 10px;
+
+            font-size: 1.15rem;
+
+            font-weight: bold;
+
+            display: none;
+        }
+
+
+        .good-result {
+
+            background: #dcfce7;
+
+            color: #166534;
+        }
+
+
+        .average-result {
+
+            background: #fef3c7;
+
+            color: #92400e;
+        }
+
+
+        .low-result {
+
+            background: #fee2e2;
+
+            color: #991b1b;
+        }
+
+
+        /* =====================================
+           FOOTER
+        ===================================== */
+
+        footer {
+
+            text-align: center;
+
+            background: #111827;
+
+            color: white;
+
+            padding: 25px 15px;
+
+            margin-top: 30px;
+        }
+
+
+        /* =====================================
+           MOBILE RESPONSIVE DESIGN
+        ===================================== */
+
+        @media (max-width: 600px) {
+
+            main {
+
+                padding: 12px;
+            }
+
+
+            .card {
+
+                padding: 16px;
+            }
+
+
+            nav button {
+
+                flex:
+                    1 1 40%;
+
+                font-size: 0.85rem;
+            }
+
+
+            .angle-value {
+
+                font-size: 1.6rem;
+            }
+
+
+            .angle-table {
+
+                font-size: 0.82rem;
+            }
+
+
+            .angle-table th,
+            .angle-table td {
+
+                padding: 7px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================
+     HEADER
+========================================= -->
+
+<header>
+
+    <h1>
+        📐 Angles Interactive Simulator
+    </h1>
+
+    <p>
+        Learn • Explore • Practise • Test Yourself
+    </p>
+
+</header>
+
+
+<!-- =========================================
+     NAVIGATION
+========================================= -->
+
+<nav>
+
+    <button onclick="showSection('learn')">
+        Study Notes
+    </button>
+
+    <button onclick="showSection('simulator')">
+        Interactive Simulator
+    </button>
+
+    <button onclick="showSection('types')">
+        Types of Angles
+    </button>
+
+    <button onclick="showSection('quiz')">
+        15-Question Quiz
+    </button>
+
+</nav>
+
+
+<!-- =========================================
+     MAIN CONTENT
+========================================= -->
+
+<main>
+
+
+<!-- =========================================
+     STUDY NOTES
+========================================= -->
+
+<section
+    id="learn"
+    class="section active"
+>
+
+
+    <div class="card">
+
+        <h2>
+            What is an Angle?
+        </h2>
+
+
+        <div class="definition">
+
+            An
+            <strong>angle</strong>
+            is formed when two rays meet at a common
+            endpoint called the
+            <strong>vertex</strong>.
+
+        </div>
+
+
+        <h3>
+            Parts of an Angle
+        </h3>
+
+
+        <ul class="note-list">
+
+            <li>
+                <strong>Vertex:</strong>
+                The common endpoint of the two rays.
+            </li>
+
+            <li>
+                <strong>Arms:</strong>
+                The two rays that form the angle.
+            </li>
+
+            <li>
+                <strong>Interior:</strong>
+                The region between the two arms.
+            </li>
+
+        </ul>
+
+    </div>
+
+
+
+    <div class="card">
+
+        <h2>
+            Measuring Angles
+        </h2>
+
+
+        <p>
+            Angles are commonly measured in
+            <strong>degrees (°)</strong>.
+        </p>
+
+
+        <div class="formula">
+            One complete revolution = 360°
+        </div>
+
+
+        <div class="formula">
+            Half turn = 180°
+        </div>
+
+
+        <div class="formula">
+            Quarter turn = 90°
+        </div>
+
+    </div>
+
+
+
+    <div class="card">
+
+        <h2>
+            Angle Relationships
+        </h2>
+
+
+        <h3>
+            Complementary Angles
+        </h3>
+
+        <p>
+            Two angles are complementary when their
+            sum is <strong>90°</strong>.
+        </p>
+
+
+        <div class="formula">
+            40° + 50° = 90°
+        </div>
+
+
+        <h3>
+            Supplementary Angles
+        </h3>
+
+        <p>
+            Two angles are supplementary when their
+            sum is <strong>180°</strong>.
+        </p>
+
+
+        <div class="formula">
+            110° + 70° = 180°
+        </div>
+
+
+        <h3>
+            Angles on a Straight Line
+        </h3>
+
+        <p>
+            Angles on a straight line add up to
+            <strong>180°</strong>.
+        </p>
+
+
+        <h3>
+            Angles Around a Point
+        </h3>
+
+        <p>
+            Angles around a point add up to
+            <strong>360°</strong>.
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================
+     INTERACTIVE SIMULATOR
+========================================= -->
+
+<section
+    id="simulator"
+    class="section"
+>
+
+
+    <div class="card simulator">
+
+        <h2>
+            Interactive Angle Simulator
+        </h2>
+
+
+        <p>
+            Move the slider to change the angle.
+        </p>
+
+
+        <div class="angle-display">
+
+
+            <canvas
+                id="angleCanvas"
+                width="500"
+                height="380"
+            >
+                Your browser does not support Canvas.
+            </canvas>
+
+
+            <div class="angle-value">
+
+                <span id="angleValue">
+                    90
+                </span>°
+
+            </div>
+
+
+            <input
+                type="range"
+                id="angleSlider"
+                min="0"
+                max="360"
+                value="90"
+            >
+
+
+            <div
+                class="angle-type"
+                id="angleType"
+            >
+                Right Angle
+            </div>
+
+
+            <div class="simulator-info">
+
+                <strong>
+                    Challenge:
+                </strong>
+
+                Move the slider to different positions
+                and identify the angle type.
+
+            </div>
+
+
+            <br>
+
+
+            <button
+                class="button"
+                onclick="setAngle(0)"
+            >
+                0°
+            </button>
+
+
+            <button
+                class="button"
+                onclick="setAngle(45)"
+            >
+                45°
+            </button>
+
+
+            <button
+                class="button"
+                onclick="setAngle(90)"
+            >
+                90°
+            </button>
+
+
+            <button
+                class="button"
+                onclick="setAngle(180)"
+            >
+                180°
+            </button>
+
+
+            <button
+                class="button"
+                onclick="setAngle(270)"
+            >
+                270°
+            </button>
+
+
+            <button
+                class="button"
+                onclick="setAngle(360)"
+            >
+                360°
+            </button>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================
+     TYPES OF ANGLES
+========================================= -->
+
+<section
+    id="types"
+    class="section"
+>
+
+
+    <div class="card">
+
+        <h2>
+            Types of Angles
+        </h2>
+
+
+        <table class="angle-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Type
+                    </th>
+
+                    <th>
+                        Measurement
+                    </th>
+
+                    <th>
+                        Example
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+
+                <tr>
+
+                    <td>
+                        Zero Angle
+                    </td>
+
+                    <td>
+                        0°
+                    </td>
+
+                    <td>
+                        0°
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        Acute Angle
+                    </td>
+
+                    <td>
+                        Greater than 0°
+                        and less than 90°
+                    </td>
+
+                    <td>
+                        45°
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        Right Angle
+                    </td>
+
+                    <td>
+                        Exactly 90°
+                    </td>
+
+                    <td>
+                        90°
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        Obtuse Angle
+                    </td>
+
+                    <td>
+                        Greater than 90°
+                        and less than 180°
+                    </td>
+
+                    <td>
+                        120°
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        Straight Angle
+                    </td>
+
+                    <td>
+                        Exactly 180°
+                    </td>
+
+                    <td>
+                        180°
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        Reflex Angle
+                    </td>
+
+                    <td>
+                        Greater than 180°
+                        and less than 360°
+                    </td>
+
+                    <td>
+                        270°
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        Complete Angle
+                    </td>
+
+                    <td>
+                        Exactly 360°
+                    </td>
+
+                    <td>
+                        360°
+                    </td>
+
+                </tr>
+
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+
+    <div class="card">
+
+        <h2>
+            Quick Memory Guide
+        </h2>
+
+
+        <ul class="note-list">
+
+            <li>
+                Less than 90° →
+                <strong>Acute</strong>
+            </li>
+
+            <li>
+                Exactly 90° →
+                <strong>Right</strong>
+            </li>
+
+            <li>
+                Between 90° and 180° →
+                <strong>Obtuse</strong>
+            </li>
+
+            <li>
+                Exactly 180° →
+                <strong>Straight</strong>
+            </li>
+
+            <li>
+                Between 180° and 360° →
+                <strong>Reflex</strong>
+            </li>
+
+            <li>
+                Exactly 360° →
+                <strong>Complete</strong>
+            </li>
+
+        </ul>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================
+     QUIZ
+========================================= -->
+
+<section
+    id="quiz"
+    class="section"
+>
+
+
+<div class="card">
+
+
+<h2>
+    15-Question Angle Quiz
+</h2>
+
+
+<p>
+    Select one answer for every question.
+</p>
+
+
+<form id="quizForm">
+
+
+<!-- QUESTION 1 -->
+
+<div class="question">
+
+<h3>
+1. What is an angle?
+</h3>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q1"
+value="A"
+>
+
+A shape with four sides
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q1"
+value="B"
+>
+
+Two rays meeting at a common endpoint
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q1"
+value="C"
+>
+
+A circle
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q1"
+value="D"
+>
+
+A triangle
+
+</label>
+
+</div>
+
+
+
+<!-- QUESTION 2 -->
+
+<div class="question">
+
+<h3>
+2. What is the common endpoint of two rays called?
+</h3>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q2"
+value="A"
+>
+
+Arm
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q2"
+value="B"
+>
+
+Side
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q2"
+value="C"
+>
+
+Vertex
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q2"
+value="D"
+>
+
+Radius
+
+</label>
+
+</div>
+
+
+
+<!-- QUESTION 3 -->
+
+<div class="question">
+
+<h3>
+3. Which angle is less than 90°?
+</h3>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q3"
+value="A"
+>
+
+Acute angle
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q3"
+value="B"
+>
+
+Obtuse angle
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q3"
+value="C"
+>
+
+Straight angle
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q3"
+value="D"
+>
+
+Reflex angle
+
+</label>
+
+</div>
+
+
+
+<!-- QUESTION 4 -->
+
+<div class="question">
+
+<h3>
+4. What is the measure of a right angle?
+</h3>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q4"
+value="A"
+>
+
+45°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q4"
+value="B"
+>
+
+90°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q4"
+value="C"
+>
+
+180°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q4"
+value="D"
+>
+
+360°
+
+</label>
+
+</div>
+
+
+
+<!-- QUESTION 5 -->
+
+<div class="question">
+
+<h3>
+5. Which angle is greater than 90° but less than 180°?
+</h3>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q5"
+value="A"
+>
+
+Acute
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q5"
+value="B"
+>
+
+Right
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q5"
+value="C"
+>
+
+Obtuse
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q5"
+value="D"
+>
+
+Reflex
+
+</label>
+
+</div>
+
+
+
+<!-- QUESTION 6 -->
+
+<div class="question">
+
+<h3>
+6. What is a straight angle?
+</h3>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q6"
+value="A"
+>
+
+45°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q6"
+value="B"
+>
+
+90°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q6"
+value="C"
+>
+
+180°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q6"
+value="D"
+>
+
+360°
+
+</label>
+
+</div>
+
+
+
+<!-- QUESTION 7 -->
+
+<div class="question">
+
+<h3>
+7. Which angle is greater than 180° but less than 360°?
+</h3>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q7"
+value="A"
+>
+
+Acute
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q7"
+value="B"
+>
+
+Right
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q7"
+value="C"
+>
+
+Obtuse
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q7"
+value="D"
+>
+
+Reflex
+
+</label>
+
+</div>
+
+
+
+<!-- QUESTION 8 -->
+
+<div class="question">
+
+<h3>
+8. Two complementary angles have a total of:
+</h3>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q8"
+value="A"
+>
+
+90°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q8"
+value="B"
+>
+
+180°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q8"
+value="C"
+>
+
+270°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q8"
+value="D"
+>
+
+360°
+
+</label>
+
+</div>
+
+
+
+<!-- QUESTION 9 -->
+
+<div class="question">
+
+<h3>
+9. Two supplementary angles have a total of:
+</h3>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q9"
+value="A"
+>
+
+90°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q9"
+value="B"
+>
+
+120°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q9"
+value="C"
+>
+
+180°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q9"
+value="D"
+>
+
+360°
+
+</label>
+
+</div>
+
+
+
+<!-- QUESTION 10 -->
+
+<div class="question">
+
+<h3>
+10. Angles around a point add up to:
+</h3>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q10"
+value="A"
+>
+
+90°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q10"
+value="B"
+>
+
+180°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q10"
+value="C"
+>
+
+270°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q10"
+value="D"
+>
+
+360°
+
+</label>
+
+</div>
+
+
+
+<!-- QUESTION 11 -->
+
+<div class="question">
+
+<h3>
+11. Which of these is an obtuse angle?
+</h3>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q11"
+value="A"
+>
+
+30°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q11"
+value="B"
+>
+
+90°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q11"
+value="C"
+>
+
+135°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q11"
+value="D"
+>
+
+180°
+
+</label>
+
+</div>
+
+
+
+<!-- QUESTION 12 -->
+
+<div class="question">
+
+<h3>
+12. Which of these is a reflex angle?
+</h3>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q12"
+value="A"
+>
+
+60°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q12"
+value="B"
+>
+
+90°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q12"
+value="C"
+>
+
+150°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q12"
+value="D"
+>
+
+240°
+
+</label>
+
+</div>
+
+
+
+<!-- QUESTION 13 -->
+
+<div class="question">
+
+<h3>
+13. What is the complement of 35°?
+</h3>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q13"
+value="A"
+>
+
+45°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q13"
+value="B"
+>
+
+55°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q13"
+value="C"
+>
+
+65°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q13"
+value="D"
+>
+
+145°
+
+</label>
+
+</div>
+
+
+
+<!-- QUESTION 14 -->
+
+<div class="question">
+
+<h3>
+14. What is the supplement of 70°?
+</h3>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q14"
+value="A"
+>
+
+20°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q14"
+value="B"
+>
+
+70°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q14"
+value="C"
+>
+
+110°
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q14"
+value="D"
+>
+
+290°
+
+</label>
+
+</div>
+
+
+
+<!-- QUESTION 15 -->
+
+<div class="question">
+
+<h3>
+15. What type of angle is exactly 360°?
+</h3>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q15"
+value="A"
+>
+
+Straight angle
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q15"
+value="B"
+>
+
+Reflex angle
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q15"
+value="C"
+>
+
+Complete angle
+
+</label>
+
+
+<label class="option">
+
+<input
+type="radio"
+name="q15"
+value="D"
+>
+
+Right angle
+
+</label>
+
+</div>
+
+
+
+<!-- QUIZ BUTTONS -->
+
+<button
+type="button"
+class="button"
+onclick="checkQuiz()"
+>
+
+Submit Quiz
+
+</button>
+
+
+<button
+type="button"
+class="button reset-button"
+onclick="resetQuiz()"
+>
+
+Reset Quiz
+
+</button>
+
+
+<div id="quizResult"></div>
+
+
+</form>
+
+
+</div>
+
+</section>
+
+
+</main>
+
+
+<!-- =========================================
+     FOOTER
+========================================= -->
+
+<footer>
+
+<p>
+Angles Interactive Simulator
+</p>
+
+<p>
+Interactive Mathematics Learning Resource
+</p>
+
+</footer>
+
+
+
+<script>
+
+
+/* =========================================
+   SECTION NAVIGATION
+========================================= */
+
+
+function showSection(sectionId) {
+
+    const sections =
+        document.querySelectorAll(".section");
+
+
+    sections.forEach(
+        function(section) {
+
+            section.classList.remove("active");
+
+        }
+    );
+
+
+    document
+        .getElementById(sectionId)
+        .classList.add("active");
+
+
+    window.scrollTo({
+
+        top: 0,
+
+        behavior: "smooth"
+
+    });
+
+}
+
+
+
+/* =========================================
+   ANGLE SIMULATOR
+========================================= */
+
+
+const canvas =
+    document.getElementById(
+        "angleCanvas"
+    );
+
+
+const ctx =
+    canvas.getContext("2d");
+
+
+const slider =
+    document.getElementById(
+        "angleSlider"
+    );
+
+
+const angleValue =
+    document.getElementById(
+        "angleValue"
+    );
+
+
+const angleType =
+    document.getElementById(
+        "angleType"
+    );
+
+
+
+/* -----------------------------------------
+   IDENTIFY ANGLE TYPE
+----------------------------------------- */
+
+
+function getAngleType(angle) {
+
+
+    if (angle === 0) {
+
+        return "Zero Angle";
+
+    }
+
+
+    if (
+        angle > 0 &&
+        angle < 90
+    ) {
+
+        return "Acute Angle";
+
+    }
+
+
+    if (angle === 90) {
+
+        return "Right Angle";
+
+    }
+
+
+    if (
+        angle > 90 &&
+        angle < 180
+    ) {
+
+        return "Obtuse Angle";
+
+    }
+
+
+    if (angle === 180) {
+
+        return "Straight Angle";
+
+    }
+
+
+    if (
+        angle > 180 &&
+        angle < 360
+    ) {
+
+        return "Reflex Angle";
+
+    }
+
+
+    return "Complete Angle";
+
+}
+
+
+
+/* -----------------------------------------
+   DRAW ANGLE
+----------------------------------------- */
+
+
+function drawAngle(angle) {
+
+
+    /* Clear canvas */
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    /* Centre */
+
+    const centerX = 250;
+
+    const centerY = 200;
+
+
+    /* Radius */
+
+    const radius = 130;
+
+
+    /* Draw baseline */
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        centerX,
+        centerY
+    );
+
+    ctx.lineTo(
+        centerX + radius,
+        centerY
+    );
+
+    ctx.strokeStyle = "#2563eb";
+
+    ctx.lineWidth = 7;
+
+    ctx.stroke();
+
+
+
+    /* Convert degrees to radians */
+
+    const radians =
+        -angle *
+        Math.PI /
+        180;
+
+
+
+    /* Calculate rotating arm */
+
+    const endX =
+        centerX +
+        radius *
+        Math.cos(radians);
+
+
+    const endY =
+        centerY +
+        radius *
+        Math.sin(radians);
+
+
+
+    /* Draw rotating arm */
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        centerX,
+        centerY
+    );
+
+    ctx.lineTo(
+        endX,
+        endY
+    );
+
+    ctx.strokeStyle = "#ef4444";
+
+    ctx.lineWidth = 7;
+
+    ctx.stroke();
+
+
+
+    /* Draw vertex */
+
+    ctx.beginPath();
+
+    ctx.arc(
+        centerX,
+        centerY,
+        9,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle = "#111827";
+
+    ctx.fill();
+
+
+
+    /* Draw angle arc */
+
+    if (
+        angle > 0 &&
+        angle < 360
+    ) {
+
+
+        ctx.beginPath();
+
+
+        ctx.arc(
+
+            centerX,
+
+            centerY,
+
+            60,
+
+            0,
+
+            radians,
+
+            true
+
+        );
+
+
+        ctx.strokeStyle = "#10b981";
+
+        ctx.lineWidth = 5;
+
+        ctx.stroke();
+
+    }
+
+
+
+    /* Vertex label */
+
+    ctx.font =
+        "bold 20px Arial";
+
+
+    ctx.fillStyle =
+        "#111827";
+
+
+    ctx.fillText(
+
+        "Vertex",
+
+        centerX - 30,
+
+        centerY + 40
+
+    );
+
+}
+
+
+
+/* -----------------------------------------
+   UPDATE SIMULATOR
+----------------------------------------- */
+
+
+function updateSimulator() {
+
+
+    const angle =
+        Number(slider.value);
+
+
+    angleValue.textContent =
+        angle;
+
+
+    angleType.textContent =
+        getAngleType(angle);
+
+
+    drawAngle(angle);
+
+}
+
+
+
+/* -----------------------------------------
+   CHANGE ANGLE WITH SLIDER
+----------------------------------------- */
+
+
+slider.addEventListener(
+
+    "input",
+
+    updateSimulator
+
+);
+
+
+
+/* -----------------------------------------
+   QUICK ANGLE BUTTONS
+----------------------------------------- */
+
+
+function setAngle(angle) {
+
+    slider.value = angle;
+
+    updateSimulator();
+
+}
+
+
+
+/* -----------------------------------------
+   START SIMULATOR
+----------------------------------------- */
+
+
+updateSimulator();
+
+
+
+/* =========================================
+   QUIZ ANSWERS
+========================================= */
+
+
+const answers = {
+
+    q1: "B",
+
+    q2: "C",
+
+    q3: "A",
+
+    q4: "B",
+
+    q5: "C",
+
+    q6: "C",
+
+    q7: "D",
+
+    q8: "A",
+
+    q9: "C",
+
+    q10: "D",
+
+    q11: "C",
+
+    q12: "D",
+
+    q13: "B",
+
+    q14: "C",
+
+    q15: "C"
+
+};
+
+
+
+/* =========================================
+   CHECK QUIZ
+========================================= */
+
+
+function checkQuiz() {
+
+
+    let score = 0;
+
+    let answered = 0;
+
+
+    for (
+        let i = 1;
+        i <= 15;
+        i++
+    ) {
+
+
+        const selected =
+            document.querySelector(
+
+                `input[name="q${i}"]:checked`
+
+            );
+
+
+        if (selected) {
+
+
+            answered++;
+
+
+            if (
+                selected.value ===
+                answers[`q${i}`]
+            ) {
+
+                score++;
+
+            }
+
+        }
+
+    }
+
+
+
+    const result =
+        document.getElementById(
+            "quizResult"
+        );
+
+
+    result.style.display =
+        "block";
+
+
+    result.className = "";
+
+
+
+    /* Check unanswered questions */
+
+    if (
+        answered < 15
+    ) {
+
+
+        result.classList.add(
+            "low-result"
+        );
+
+
+        result.innerHTML =
+
+            `Please answer all 15 questions.
+             <br><br>
+             You have answered
+             ${answered} out of 15.`;
+
+
+        return;
+
+    }
+
+
+
+    /* Calculate percentage */
+
+    const percentage =
+        Math.round(
+            (score / 15) * 100
+        );
+
+
+
+    /* Determine message */
+
+    let message;
+
+
+    if (
+        score >= 13
+    ) {
+
+
+        message =
+            "Excellent! You have a strong understanding of angles.";
+
+
+        result.classList.add(
+            "good-result"
+        );
+
+    }
+
+
+    else if (
+        score >= 10
+    ) {
+
+
+        message =
+            "Good work! Review a few concepts and try again.";
+
+
+        result.classList.add(
+            "good-result"
+        );
+
+    }
+
+
+    else if (
+        score >= 7
+    ) {
+
+
+        message =
+            "You are making progress. Review the study notes and practise again.";
+
+
+        result.classList.add(
+            "average-result"
+        );
+
+    }
+
+
+    else {
+
+
+        message =
+            "Keep practising. Study the notes and use the simulator before trying the quiz again.";
+
+
+        result.classList.add(
+            "low-result"
+        );
+
+    }
+
+
+
+    /* Display result */
+
+    result.innerHTML =
+
+        `<strong>
+            Your Score: ${score}/15
+            (${percentage}%)
+        </strong>
+
+        <br><br>
+
+        ${message}`;
+
+}
+
+
+
+/* =========================================
+   RESET QUIZ
+========================================= */
+
+
+function resetQuiz() {
+
+
+    document
+        .getElementById("quizForm")
+        .reset();
+
+
+    const result =
+        document.getElementById(
+            "quizResult"
+        );
+
+
+    result.style.display =
+        "none";
+
+
+    result.innerHTML = "";
+
+}
+
+</script>
+
+
+</body>
+
+</html>
